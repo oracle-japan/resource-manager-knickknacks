@@ -1,14 +1,10 @@
-### Common variables
-variable "compartment_id" {
-  description = "コンパートメント OCID"
+variable "compartment_ocid" {
 }
 variable "region" {
-  description = "リージョン識別子 (e.g. ap-tokyo-1, ap-osaka-1, etc.)"
 }
-
 ### VCN variables
 variable "cidr_block_all" {
-  default = "0.0.0.0/0"
+  default     = "0.0.0.0/0"
   description = "All CIDR Block"
 }
 variable "cidr_block_vcn" {
@@ -16,32 +12,28 @@ variable "cidr_block_vcn" {
   description = "VCN に割り当てる CIDR Block"
 }
 variable "cidr_block_node_pool_subnet" {
-  default = "10.0.10.0/24"
+  default     = "10.0.10.0/24"
   description = "ノードプールに割り当てる CIDR Block"
 }
 variable "cidr_block_k8s_api_endpoint_subnet" {
-  default = "10.0.0.0/28"
+  default     = "10.0.0.0/28"
   description = "Kubernetes API Endpoint に割り当てる CIDR Block"
 }
 variable "cidr_block_lb_subnet" {
-  default = "10.0.20.0/24"
+  default     = "10.0.20.0/24"
   description = "Service:LoadBalancer に割り当てる CIDR Block"
 }
 variable "protocol_all" {
-  default = "all"
+  default     = "all"
   description = "Protocol for ALL"
 }
 variable "protocol_icmp" {
-  default = "1"
+  default     = "1"
   description = "Protocol number for ICMP"
 }
 variable "protocol_tcp" {
-  default = "6"
+  default     = "6"
   description = "Protocol number for TCP"
-}
-variable "services_network" {
-  default     = "all-nrt-services-in-oracle-services-network"
-  description = "Oracle Service Network でサポートするすべてのサービスの CIDR"
 }
 variable "subnet_prohibit_public_ip_on_vnic" {
   default     = "true"
@@ -62,7 +54,7 @@ variable "cluster_name" {
   description = "OKE クラスタの表示名"
 }
 variable "kubernetes_version" {
-  default     = "v1.25.4"
+  default     = "Latest"
   description = "Kubernetes のバージョン"
 }
 variable "cluster_options_add_ons_is_kubernetes_dashboard_enabled" {
@@ -93,14 +85,6 @@ variable "node_pool_name" {
   default     = "OKE Handson Node Pool"
   description = "ノードプールの表示名"
 }
-variable "node_pool_node_image_name" {
-  default     = "Oracle-Linux-7.9"
-  description = "ノードプール内のインスタンスに使用するイメージ"
-}
-variable "node_pool_node_shape" {
-  default     = "VM.Standard2.1"
-  description = "ノードプール内のインスタンスに使用するシェイプ"
-}
 variable "node_pool_quantity_per_subnet" {
   default     = 1
   description = "サブネットごとに配置するノードプールの数"
@@ -110,6 +94,18 @@ variable "node_pool_boot_volume_size_in_gbs" {
   description = "ノードプール内のインスタンスにアタッチするボリュームの量"
 }
 variable "node_pool_instance_number" {
-  default = 1
+  default     = 1
   description = "ノードプール中にプロビジョニングするインスタンスの台数"
+}
+variable "node_pool_node_shape" {
+  default     = "VM.Standard.E3.Flex"
+  description = "Worker Nodeのシェイプ・タイプ"
+}
+variable "node_pool_node_shape_config_ocpus" {
+  default     = "1"
+  description = "フレキシブルシェイプのoCPU数"
+}
+variable "node_pool_node_shape_config_memory_in_gbs" {
+  default     = "16"
+  description = "フレキシブルシェイプのメモリ数"
 }
