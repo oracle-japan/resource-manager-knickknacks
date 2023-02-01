@@ -31,7 +31,7 @@ resource "oci_containerengine_node_pool" "tutorial_node_pool" {
   }
   node_source_details {
     source_type             = "IMAGE"
-    image_id                = [for image in data.oci_containerengine_node_pool_option.oke.sources : image.image_id if length(regexall("Oracle-Linux-8.6-20[0-9].*OKE.*", image.source_name)) > 0][0]
+    image_id                = [for image in data.oci_containerengine_node_pool_option.tutorial_node_pool_option.sources : image.image_id if length(regexall("Oracle-Linux-8.6-20[0-9].*OKE.*", image.source_name)) > 0][0]
     boot_volume_size_in_gbs = var.node_pool_boot_volume_size_in_gbs
   }
   node_config_details {

@@ -29,15 +29,6 @@ data "oci_containerengine_cluster_kube_config" "tutorial_cluster_kube_config" {
   token_version = var.cluster_kube_config_token_version
 }
 
-data "oci_containerengine_node_pool_option" "oke" {
-  compartment_id      = var.compartment_ocid
-  node_pool_option_id = "all"
-}
-
-data "oci_containerengine_clusters" "oke" {
-  compartment_id = var.compartment_ocid
-}
-
 data "oci_core_services" "service_gateway" {
 }
 
