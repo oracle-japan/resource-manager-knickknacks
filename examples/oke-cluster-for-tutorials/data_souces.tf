@@ -3,7 +3,7 @@ data "oci_identity_availability_domain" "ad" {
   ad_number      = var.availability_domain_number
 }
 
-data "oci_containerengine_cluster_option" "test_cluster_option" {
+data "oci_containerengine_cluster_option" "tutorial_cluster_option" {
   cluster_option_id = "all"
   compartment_id    = var.compartment_ocid
 }
@@ -27,10 +27,6 @@ data "oci_containerengine_cluster_kube_config" "tutorial_cluster_kube_config" {
   cluster_id    = oci_containerengine_cluster.tutorial_cluster.id
   expiration    = var.cluster_kube_config_expiration
   token_version = var.cluster_kube_config_token_version
-}
-
-data "oci_containerengine_cluster_option" "oke" {
-  cluster_option_id = "all"
 }
 
 data "oci_containerengine_node_pool_option" "oke" {

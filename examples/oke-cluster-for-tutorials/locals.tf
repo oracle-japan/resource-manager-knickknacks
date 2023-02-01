@@ -4,7 +4,7 @@ locals {
 
 # Get OKE options
 locals {
-  cluster_k8s_latest_version = reverse(sort(data.oci_containerengine_cluster_option.oke.kubernetes_versions))[0]
+  cluster_k8s_latest_version = reverse(sort(data.oci_containerengine_cluster_option.tutorial_cluster_option.kubernetes_versions))[0]
 
   node_pool_k8s_latest_version = reverse(sort(data.oci_containerengine_node_pool_option.oke.kubernetes_versions))[0]
 }
@@ -18,6 +18,5 @@ locals {
   compute_flexible_shapes = [
     "VM.Standard.E3.Flex",
     "VM.Standard.E4.Flex",
-    "VM.Standard.A1.Flex"
   ]
 }
