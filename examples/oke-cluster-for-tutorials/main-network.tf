@@ -1,25 +1,25 @@
 ### VCN
 resource "oci_core_vcn" "tutorial_vcn" {
   cidr_block     = var.cidr_block_vcn
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   display_name   = "Handson Vcn"
 }
 
 ### Gateways
 resource "oci_core_internet_gateway" "tutorial_igw" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   display_name   = "Internet Gateway for OKE Handson"
   vcn_id         = oci_core_vcn.tutorial_vcn.id
 }
 
 resource "oci_core_nat_gateway" "tutorial_ngw" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   display_name   = "Nat Gateway for OKE Tutorial"
   vcn_id         = oci_core_vcn.tutorial_vcn.id
 }
 
 resource "oci_core_service_gateway" "tutorial_svcgw" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   services {
     service_id = data.oci_core_services.tutorial_services.services.0.id
   }
@@ -27,10 +27,11 @@ resource "oci_core_service_gateway" "tutorial_svcgw" {
   display_name = "Service Gateway for OKE Handson"
 }
 
+
 ### Route Tables
 resource "oci_core_default_route_table" "tutorial_public_route_table" {
   manage_default_resource_id = oci_core_vcn.tutorial_vcn.default_route_table_id
-  compartment_id             = var.compartment_id
+  compartment_id             = var.compartment_ocid
   display_name               = "Public Route Table for OKE Handson"
   route_rules {
     destination       = var.cidr_block_all
@@ -40,7 +41,7 @@ resource "oci_core_default_route_table" "tutorial_public_route_table" {
 }
 
 resource "oci_core_route_table" "tutorial_private_route_table" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.tutorial_vcn.id
   display_name   = "Private Route Table for OKE Handson"
   route_rules {
@@ -49,7 +50,7 @@ resource "oci_core_route_table" "tutorial_private_route_table" {
     network_entity_id = oci_core_nat_gateway.tutorial_ngw.id
   }
   route_rules {
-    destination       = var.services_network
+    destination       = data.oci_core_services.tutorial_services.services.0.cidr_block
     destination_type  = "SERVICE_CIDR_BLOCK"
     network_entity_id = oci_core_service_gateway.tutorial_svcgw.id
   }
@@ -57,7 +58,7 @@ resource "oci_core_route_table" "tutorial_private_route_table" {
 
 ### Security Lists
 resource "oci_core_security_list" "k8s_api_endpoint_security_list" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.tutorial_vcn.id
   display_name   = "K8s Endpoint Security List"
   ingress_security_rules {
@@ -94,7 +95,7 @@ resource "oci_core_security_list" "k8s_api_endpoint_security_list" {
     }
   }
   egress_security_rules {
-    destination      = var.services_network
+    destination      = data.oci_core_services.tutorial_services.services.0.cidr_block
     description      = "Allow Kubernetes Control Plane to communicate with OKE"
     protocol         = var.protocol_tcp
     destination_type = "SERVICE_CIDR_BLOCK"
@@ -120,7 +121,7 @@ resource "oci_core_security_list" "k8s_api_endpoint_security_list" {
 }
 
 resource "oci_core_security_list" "node_pool_security_list" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.tutorial_vcn.id
   display_name   = "Node Pool Security List"
   ingress_security_rules {
@@ -253,7 +254,7 @@ resource "oci_core_security_list" "node_pool_security_list" {
     }
   }
   egress_security_rules {
-    destination      = var.services_network
+    destination      = data.oci_core_services.tutorial_services.services.0.cidr_block
     description      = "Allow nodes to communicate with OKE to ensure correct start-up and continued functioning"
     protocol         = var.protocol_tcp
     destination_type = "SERVICE_CIDR_BLOCK"
@@ -270,7 +271,7 @@ resource "oci_core_security_list" "node_pool_security_list" {
 }
 
 resource "oci_core_security_list" "lb_security_list" {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.tutorial_vcn.id
   display_name   = "Security List for Load Balancer Subnet"
   ingress_security_rules {
@@ -390,7 +391,7 @@ resource "oci_core_security_list" "lb_security_list" {
 ### Subnets
 resource "oci_core_subnet" "k8s_api_endpoint_regional_subnet" {
   cidr_block        = var.cidr_block_k8s_api_endpoint_subnet
-  compartment_id    = var.compartment_id
+  compartment_id    = var.compartment_ocid
   vcn_id            = oci_core_vcn.tutorial_vcn.id
   security_list_ids = [oci_core_security_list.k8s_api_endpoint_security_list.id]
   display_name      = "K8s API Endpoint Subnet"
@@ -399,7 +400,7 @@ resource "oci_core_subnet" "k8s_api_endpoint_regional_subnet" {
 
 resource "oci_core_subnet" "node_pool_regional_subnet" {
   cidr_block                 = var.cidr_block_node_pool_subnet
-  compartment_id             = var.compartment_id
+  compartment_id             = var.compartment_ocid
   vcn_id                     = oci_core_vcn.tutorial_vcn.id
   security_list_ids          = [oci_core_security_list.node_pool_security_list.id]
   display_name               = "Node Pool Subnet"
@@ -409,7 +410,7 @@ resource "oci_core_subnet" "node_pool_regional_subnet" {
 
 resource "oci_core_subnet" "lb_regional_subnet" {
   cidr_block        = var.cidr_block_lb_subnet
-  compartment_id    = var.compartment_id
+  compartment_id    = var.compartment_ocid
   vcn_id            = oci_core_vcn.tutorial_vcn.id
   security_list_ids = [oci_core_security_list.lb_security_list.id]
   display_name      = "LoadBalancer Subnet"
