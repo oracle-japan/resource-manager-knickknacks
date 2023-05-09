@@ -1,6 +1,6 @@
 module "oke-quickstart" {
   source  = "shukawam/oke-quickstart/oci"
-  version = "1.0.0"
+  version = "1.1.0"
 
   compartment_ocid = var.compartment_ocid
   region           = var.region
