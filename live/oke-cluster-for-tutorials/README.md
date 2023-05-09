@@ -41,3 +41,21 @@ variable "node_pool_node_shape_config_ocpus" {
   default = "1" # 必要であれば修正する
 }
 ```
+
+Provider のダウンロードを実施します。
+
+```bash
+terraform init
+```
+
+計画を実行します。
+
+```bash
+terraform plan
+```
+
+クラスタをプロビジョニングします。
+
+```bash
+terraform apply
+```
